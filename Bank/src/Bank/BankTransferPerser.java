@@ -11,6 +11,8 @@ public class BankTransferPerser implements BankTransferConfiguration {
 	 */
 	String[] order = null;
 	int at_num = 0;
+	
+	String from ="どこか";
 
 	public boolean Put(String put) {
 		try {
@@ -22,6 +24,10 @@ public class BankTransferPerser implements BankTransferConfiguration {
 		at_num++;
 		return true;
 
+	}
+	
+	public void setFrom(String from){
+		this.from = from;
 	}
 
 	public String Perse() {
@@ -50,10 +56,12 @@ public class BankTransferPerser implements BankTransferConfiguration {
 					//振込処理を実行してみる
 
 					System.out.println("振込処理実行");
-					//以下振込処理
-					System.out.println(String.valueOf(MyBank.getAccount().getCashAmount()));
+					//以下振込処理　シングルトン構造に不安があるので改善が必要と考えています
 					
-					if(MyBank.getAccount().Deposit(Integer.parseInt(order[2]))){
+					if(MyBank.Deposit(Integer.parseInt(order[2]))){
+						String[] messageToView = {"振込処理受信",from+"から振込処理を受信し振り込まれました.内容は以下の通りです\n"+
+													"[振込金額："+order[2]+",メッセージ："+order[3]+"]"};
+						EventManager.fireEvent("ATMView", messageToView);
 						return BankTransferConfiguration.QUIT;
 					}
 					//各行動にコメントが付けられたらイイね。

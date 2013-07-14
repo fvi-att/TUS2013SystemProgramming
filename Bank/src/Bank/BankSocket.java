@@ -34,7 +34,7 @@ public class BankSocket implements BankTransferConfiguration {
 	 * 
 	 */
 	public BankSocket(String dst_ip, int money, String message) {
-		//送信メッセージのデータ構造を作成
+		//送信メッセージのデータ構造を作成今回はところてん方式でデータの出し入れが出来るキューを用いる
 		MessageQueue mes_q = new MessageQueue("send",money,message);
 		
 		
@@ -42,14 +42,21 @@ public class BankSocket implements BankTransferConfiguration {
 		System.out.println("接続開始");
 		try {
 			socket = new Socket(dst_ip, SERVER_PORT);
-
+			
+			
+		    /* 準備：データ入力ストリームの定義--ソケットからデータを
+		       取ってくる．sok → in  */  
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
+			
+			/* 準備：データ出力ストリームの定義--ソケットにデータを
+		       書き込む．  sok ← out */
+
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
 					socket.getOutputStream()));
 			
 			
-			writer.write("bankSystemConnection");
+			writer.write(BankTransferConfiguration.establish_connectionWord);
 			writer.newLine();
 			writer.flush();
 

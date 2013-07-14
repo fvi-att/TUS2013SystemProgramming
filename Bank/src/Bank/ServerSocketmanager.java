@@ -12,12 +12,16 @@ import java.net.ServerSocket;
  * @author fvi
  *
  */
-public class ServerSocketmanager extends Thread implements BankTransferConfiguration{
+public class ServerSocketmanager extends Thread implements BankTransferConfiguration, NotificationCenter{
 	//これは気にしなくてもいい
-	@SuppressWarnings("resource")
+	ServerSocket serverSocket = null;
+	
+	public ServerSocketmanager(){
+		//これは難しいので無視して構わない
+		EventManager.Put("server_manager", this);
+	}
 	public void run(){
 		
-		ServerSocket serverSocket = null;
 		
 		/*
 		 * もしかしたらサーバソケットを構築できないかもしれない
@@ -32,6 +36,10 @@ public class ServerSocketmanager extends Thread implements BankTransferConfigura
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
+			//エラーメッセージをATMViewに投げる
+			String[] err_messageToView = {"[エラー]","サーバソケットの初期化に失敗しました。システムの再起動を行なって下さい"};
+			EventManager.fireEvent("ATMView", err_messageToView);
 		}
 		
 		while(true){
@@ -46,6 +54,22 @@ public class ServerSocketmanager extends Thread implements BankTransferConfigura
 				e.printStackTrace();
 			}
 			
+		}
+		
+	}
+	@Override
+	public void NotificationCallfired(Object[] args) {
+		// TODO 自動生成されたメソッド・スタブ
+		if((String.valueOf(args[0]).matches("closed"))){
+			System.out.println("closing ServerSocket @ServerSocketManager");
+			if(serverSocket.isClosed()){
+				try {
+					serverSocket.close();
+				} catch (IOException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				}
+			}
 		}
 		
 	}

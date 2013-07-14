@@ -3,7 +3,7 @@ package Bank;
 public interface BankTransferConfiguration {
 	
 	final public int SERVER_PORT = 15000;
-	final public String establish_connectionWord ="bankSystemConnection";
+	final public String establish_connectionWord ="BankTransfer";
 	
 	//最初のコネクションも含めて5つと定義
 	final public int message_size = 5;

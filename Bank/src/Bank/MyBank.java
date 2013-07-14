@@ -28,6 +28,8 @@ public class MyBank implements CloseNotification {
 	 * 
 	 * つまり　AbstractAccount = typeA_Account, AbstractAccountAccount = typeB＿Accountともできる。
 	 * [問題]なんでこうすると便利なのか？
+	 * 
+	 * myAccountはシングルトン構造になっている。
 	 */
 	
 	private static AbstractAccount myAccount;
@@ -55,12 +57,12 @@ public class MyBank implements CloseNotification {
 		
 	}
 	/**
-	 * @deprecated
+	 * 
 	 * @param 口座を直接操作するのはおすすめしない。
 	 * @return 口座自身
 	 */
 
-	public static  AbstractAccount getAccount(){
+	private static  AbstractAccount getAccount(){
 		return myAccount;
 	}
 	/**
@@ -72,7 +74,7 @@ public class MyBank implements CloseNotification {
 	 * 
 	 */
 	
-	boolean TransfarTo(String dst_ip,int transfer_money,String message){
+	public boolean TransfarTo(String dst_ip,int transfer_money,String message){
 		//振込の定義を行う。
 		/**この場合だとある問題を解決できない。　それはなにか？
 		
@@ -84,14 +86,36 @@ public class MyBank implements CloseNotification {
 		if(myAccount.Withdraw(transfer_money)){
 			//引き出しが成功した場合は引き出しを試みる
 			new BankSocket(dst_ip,transfer_money,message);
+			return true;
 		}
 		
 		
+		System.out.println("振込処理に失敗しました。取引を中止します。");
 		
-		
-		return true;
+		return false;
 		
 	}
+	
+	public static boolean Withdraw(int amount){
+		return (getAccount().Withdraw(amount));
+	}
+	
+	public static  boolean Deposit(int amount){
+		return (getAccount().Deposit(amount));
+		
+	}
+	
+	public String getAccountType(){
+		return getAccount().getAccountType();
+	}
+	
+	public String getAccountID(){
+		return getAccount().getAccountID();
+	}
+	
+	public int getAccountAmount(){
+		return getAccount().getCashAmount();
+		}
 	
 	/**
 	 * 
@@ -105,7 +129,8 @@ public class MyBank implements CloseNotification {
 			System.out.println("-------menu------------\n"+
 			           "deposit::入金を行います\n" +
 						"withdraw::引き出しを行います^\n"+
-			           "status::今の講座情報を取得します\n");
+			           "status::今の講座情報を取得します\n"+
+						"transfer::振込み作業を行います");
 		String mes = stdReader.readLine();
 		if(mes == "quit"){
 			System.out.println("[MESSAGE]システムを終了します");
@@ -130,6 +155,18 @@ public class MyBank implements CloseNotification {
 				}else{
 					System.out.println("[ERROR]失敗しました");
 				}
+				break;
+			
+			case "transfer":
+				System.out.println("宛先ipアドレスを入力して下さい");
+				String dst_ip = stdReader.readLine();
+				System.out.println("送金金額を入力して下さい");
+				int amount = Integer.parseInt(stdReader.readLine());
+				System.out.println("メッセージを入力して下さい");
+				String message = stdReader.readLine();
+				
+				mybank.TransfarTo(dst_ip,amount, message);
+				
 				break;
 			
 			case "status":

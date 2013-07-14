@@ -8,22 +8,28 @@
 package Bank;
 
 import java.awt.Container;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.io.IOException;
+import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 //これは気にしなくていい
 @SuppressWarnings("serial")
-public class ATMFrameView extends JFrame implements ActionListener, WindowListener {
+public class ATMFrameView extends JFrame implements ActionListener, NotificationCenter {
 
 	private MyBank mybank = null;
 	Container contentpane;
+	
+	JTextArea infotextArea;
 
 	private CloseNotification close_notification = mybank;//なぜ型が違うのに代入できるのかを考えよう
 
@@ -36,8 +42,8 @@ public class ATMFrameView extends JFrame implements ActionListener, WindowListen
 	public void modify_GUI_value() {
 		//toString()を設定しておくと便利なことは何か？
 		//this.setTitle("銀行システム    "+mybank.getAccount().toString());
-		this.setTitle("銀行システム    UserID:" + mybank.getAccount().getAccountID() + "    残高："
-				+ mybank.getAccount().getCashAmount());
+		this.setTitle("銀行システム    UserID:" + mybank.getAccountID() + "    残高："
+				+ mybank.getAccountAmount());
 	}
 
 	public void showResult(boolean result, String message) {
@@ -69,11 +75,14 @@ public class ATMFrameView extends JFrame implements ActionListener, WindowListen
 				break;
 			}
 			
-			if(mybank.getAccount().Deposit(Integer.parseInt(amount_string))){
+			if(mybank.Deposit(Integer.parseInt(amount_string))){
 				System.out.println("入金を行いました");
+				infotextArea.append("\n[入金]"+amount_string+"\\の入金作業を行いました。");
 				
 			}else{
-				System.out.println("入金に失敗しました");
+				System.err.println("入金に失敗しました");
+				infotextArea.append("\\入金に失敗しました");
+				
 			}
 		break;
 		
@@ -85,11 +94,14 @@ public class ATMFrameView extends JFrame implements ActionListener, WindowListen
 			}
 			
 			
-			if(mybank.getAccount().Withdraw(Integer.parseInt(amount_string))){
+			if(mybank.Withdraw(Integer.parseInt(amount_string))){
 				System.out.println("引き出しを行いました");
+				infotextArea.append("\n[引き出し]"+amount_string+"\\の引き出し作業を行いました。");
 				
 			}else{
-				System.out.println("引き出しに失敗しました");
+				System.err.println("引き出しに失敗しました");
+				infotextArea.append("\n引き出しに失敗しました");
+				
 			}
 			
 			break;
@@ -112,17 +124,25 @@ public class ATMFrameView extends JFrame implements ActionListener, WindowListen
 			}catch(NumberFormatException formatErr){
 				//文字列をInteger型に変換することが出来ない場合。　例　r385など文字が含まれる場合など
 				System.err.println("不正な文字列が振込作業中に入力されました");
+				infotextArea.append("\n不正な文字列が入力されました作業を中断します");
 				break;
 			}
+			
 			String transfer_message = JOptionPane.showInputDialog(this, "振込先へのメッセージ", "振込", JOptionPane.QUESTION_MESSAGE);
-			mybank.TransfarTo(dst_ip, transfer_amount, transfer_message);
+			
+			infotextArea.append("\n宛先："+dst_ip+",金額："+transfer_amount+",メッセージ："+transfer_message+"\nで振り込みます");
+			if(mybank.TransfarTo(dst_ip, transfer_amount, transfer_message)){
+				infotextArea.append("\n振込が完了しました");
+			}else{
+				infotextArea.append("\n振込に失敗しました。");
+			}
 			
 			break;
 		
 		case "口座確認":
-			JOptionPane.showMessageDialog(contentpane, "残高:"+mybank.getAccount().getCashAmount()+"円\n"+
-													   "口座ID："+mybank.getAccount().getAccountID()+"\n"+
-													   	"口座タイプ:"+mybank.getAccount().getAccountType()
+			JOptionPane.showMessageDialog(contentpane, "残高:"+mybank.getAccountAmount()+"円\n"+
+													   "口座ID："+mybank.getAccountID()+"\n"+
+													   	"口座タイプ:"+mybank.getAccountType()
 													   	, "取引中の口座情報",JOptionPane.QUESTION_MESSAGE);
 			
 			break;
@@ -135,103 +155,91 @@ public class ATMFrameView extends JFrame implements ActionListener, WindowListen
 	}
 
 	public ATMFrameView() {
+		//コンストラクタ
 		super();
 
 		//Accountはシングルトンなので他のATMViewからたとえ引っ張ってきても同じ
 		mybank = new MyBank();
+		
+		//gui情報を更新
+		modify_GUI_value();
+		
+		this.setSize(800,500);
+		
+		this.setLayout(new GridLayout(1,2));
+		
+		
+		JPanel leftPanel = new JPanel();
+		JPanel rightPanel = new JPanel();
+		
+		leftPanel.setLayout(new GridLayout(4,1));
+		
+		rightPanel.setLayout(new GridLayout(1,1));
 
-		//なぜ非推奨になっているのか？　考えてみよう
-		this.setTitle("銀行システム    UserID:" + mybank.getAccount().getAccountID() + "    残高："
-				+ mybank.getAccount().getCashAmount());
-		this.setSize(500, 500);
 
-		contentpane = getContentPane();
-		//レイアウトを実装するとFrameのサイズを可変にした時に対応したサイズにしてくれる。
-		contentpane.setLayout(null);
 
 		JButton depositbutton = new JButton("入金");
-		depositbutton.setSize(100, 100);
-		depositbutton.setLocation(200, 200);
+		//depositbutton.setSize(100, 100);
+		//depositbutton.setLocation(200, 200);
 		depositbutton.addActionListener(this);
-
+		leftPanel.add(depositbutton);
+		
+		
 		JButton withdrawbutton = new JButton("引き出し");
 		withdrawbutton.setSize(100, 100);
 		withdrawbutton.setLocation(50, 50);
 		withdrawbutton.addActionListener(this);
+		leftPanel.add(withdrawbutton);
 
 		JButton transferbutton = new JButton("振込");
 		transferbutton.setSize(100, 100);
 		transferbutton.setLocation(50, 160);
 		transferbutton.addActionListener(this);
+		leftPanel.add(transferbutton);
 
-		JButton button2 = new JButton("口座確認");
-		button2.setSize(200, 100);
-		button2.setLocation(200, 350);
-		button2.setVisible(true);
-		button2.addActionListener(this);
-
+		JButton statusButton = new JButton("口座確認");
+		//statusButton.setSize(200, 100);
+		//statusButton.setLocation(200, 350);
+		statusButton.setVisible(true);
+		statusButton.addActionListener(this);
+		leftPanel.add(statusButton);
+		
+		infotextArea =new  JTextArea(30,40);
+		JScrollPane scrollpane = new JScrollPane(infotextArea,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS , JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		//scrollpane.setSize(500, 100);
+		//scrollpane.setLocation(300,300);
+		scrollpane.setVisible(true);
+		
+		rightPanel.add(scrollpane);
+		
+		/*
+		contentpane.add(scrollpane);
 		contentpane.add(depositbutton);
-		contentpane.add(button2);
+		contentpane.add(statusButton);
 		contentpane.add(withdrawbutton);
 		contentpane.add(transferbutton);
-
+		 */
+		
+		contentpane = getContentPane();
+		//レイアウトを実装するとFrameのサイズを可変にした時に対応したサイズにしてくれる。
+		contentpane.setLayout(new GridLayout(1,2));
+		contentpane.add(leftPanel);
+		contentpane.add(rightPanel);
+		
+		this.addWindowListener(new ClosedListener());
+		
 		this.setVisible(true);
+		
+		//自身のIPアドレスを表示する
+		try {
+			infotextArea.append("このマシンのIPアドレス:：" + java.net.InetAddress.getLocalHost().toString());
+		} catch (UnknownHostException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
 
 	}
 
-	public void closeListener(CloseNotification cnotify) {
-		close_notification = cnotify;
-	}
-
-	//window status 処理
-	@Override
-	public void windowActivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowClosed(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowClosing(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		System.out.println("画面が閉じられました");
-		if (close_notification != null)
-			try {
-				close_notification.whenCloseSystem();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowIconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowOpened(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
 
 	/**
 	 * mainメソッド
@@ -239,8 +247,26 @@ public class ATMFrameView extends JFrame implements ActionListener, WindowListen
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new ATMFrameView();
+		EventManager.Put("ATMView",new ATMFrameView());
 
 	}
 
+	@Override
+	public void NotificationCallfired(Object[] args) {
+		// TODO 自動生成されたメソッド・スタブ 通知センターから呼び出しを受けた時
+		//現時点は振込処理が完了した通知をATMFrameViewに行う。
+		infotextArea.append("\n["+String.valueOf(args[0])+"]"+String.valueOf(args[1]));
+		
+	}
+
+
+}
+
+class ClosedListener extends WindowAdapter {
+	public void windowClosing(WindowEvent event){
+		System.out.println("closed window");
+		String[] word ={"closed"};
+		EventManager.fireEvent("server_manager", word);
+		System.exit(0);
+	}
 }

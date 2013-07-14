@@ -48,6 +48,8 @@ public class BankServer extends Thread {
 		
 		
 		this.perser = new BankTransferPerser();
+		
+		perser.setFrom(accept.getInetAddress().toString());
 	}
 
 	/**ソケットの確立 1対1の通信の際はこれで十分です。
@@ -65,6 +67,14 @@ public class BankServer extends Thread {
 		err.printStackTrace();
 	}
 	*/
+	
+	void OutputLog(String output){
+		System.out.println(output);
+		String[] messageToView = {"[Server]",output};
+		EventManager.fireEvent("ATMView", messageToView);
+	}
+	
+	
 	public void StartCommunication() {
 		
 
@@ -84,7 +94,8 @@ public class BankServer extends Thread {
 				String mes = null;
 				// 受信するまで待機
 				while ((mes = reader.readLine()) == null);
-				System.out.println("[Server]getMessage:" + mes);
+				OutputLog("[Server]getMessage:" + mes);
+				//System.out.println("[Server]getMessage:" + mes);
 
 				// 向こうから終了するようにきたら終了させる 終了コマンドは"quit"
 				if (mes.matches(BankTransferConfiguration.QUIT) || mes.matches(BankTransferConfiguration.ABORT)) {
@@ -99,8 +110,9 @@ public class BankServer extends Thread {
 				writer.write(out_mes);
 				writer.newLine();
 				writer.flush();
-
-				System.out.println("[Server]sendMessage:" + out_mes);
+				
+				OutputLog(out_mes);
+				//System.out.println("[Server]sendMessage:" + out_mes);
 
 			}
 
