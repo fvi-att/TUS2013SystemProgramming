@@ -3,6 +3,7 @@ package Bank;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 
 /**
  * @author fvi@
@@ -65,6 +66,20 @@ public class MyBank implements CloseNotification {
 	private static  AbstractAccount getAccount(){
 		return myAccount;
 	}
+	
+	private static void PrintRecipt(String subject,int amount){
+		Recipt recipt = new Recipt();
+		recipt.addTransaction(subject,amount);
+		recipt.Print();
+	}
+	
+	@SuppressWarnings("unused")
+	private static void PrintRecipt(HashMap<String,Integer> transaction){
+		Recipt recipt = new Recipt();
+		recipt.addTransaction(transaction);
+		recipt.Print();
+		
+	}
 	/**
 	 * 
 	 * @param dst_ip 送信先
@@ -86,6 +101,13 @@ public class MyBank implements CloseNotification {
 		if(myAccount.Withdraw(transfer_money)){
 			//引き出しが成功した場合は引き出しを試みる
 			new BankSocket(dst_ip,transfer_money,message);
+			
+			
+			
+			//作業が終了したら領収書を作成する
+			PrintRecipt("振込", transfer_money);
+			
+
 			return true;
 		}
 		
@@ -97,11 +119,22 @@ public class MyBank implements CloseNotification {
 	}
 	
 	public static boolean Withdraw(int amount){
-		return (getAccount().Withdraw(amount));
+		if(getAccount().Withdraw(amount)){
+			PrintRecipt("引き出し",amount);
+			return true;
+		}else{
+			return false;
+		}
+		
 	}
 	
 	public static  boolean Deposit(int amount){
-		return (getAccount().Deposit(amount));
+		if(getAccount().Deposit(amount)){
+			PrintRecipt("入金",amount);
+			return true;
+		}else{
+			return false;
+		}
 		
 	}
 	

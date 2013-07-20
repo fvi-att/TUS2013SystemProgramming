@@ -4,16 +4,24 @@ package Bank;
 import java.io.IOException;
 import java.net.ServerSocket;
 /**
- * 
+ * @inheritDoc BankTransferConfiguration
  * 
  * 
  * 
  * @since 2013/06/04
  * @author fvi
+ * @version 1.00
+ * 
+ * このクラスはサーバソケットの管理を行いマルチスレッド化を行うことで一度に複数の受信に耐えられるように
+ * 設計してあります
+ * 
+ * @see ServerSocket
+ * 
+ * 
  *
  */
 public class ServerSocketmanager extends Thread implements BankTransferConfiguration, NotificationCenter{
-	//これは気にしなくてもいい
+
 	ServerSocket serverSocket = null;
 	
 	public ServerSocketmanager(){
@@ -29,8 +37,10 @@ public class ServerSocketmanager extends Thread implements BankTransferConfigura
 		 * 
 		 */
 		try {
-			//SERVER_PORTはBankTransferConfigurationインターフェースは一括して通信に必要な設定を管理する。
-			//これによってこのインターフェースを実装することで設定情報を一括で取得することが出来る。
+			/*
+			SERVER_PORTはBankTransferConfigurationインターフェースは一括して通信に必要な設定を管理する。
+			これによってこのインターフェースを実装することで設定情報を一括で取得することが出来る。
+			*/
 			serverSocket = new ServerSocket(SERVER_PORT);
 			System.out.println("[ServerManager]サーバソケットを生成しましたポート番号："+String.valueOf(SERVER_PORT)+"で待機します");
 		} catch (IOException e) {

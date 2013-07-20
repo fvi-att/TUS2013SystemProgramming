@@ -93,8 +93,13 @@ public class BankServer extends Thread {
 
 				String mes = null;
 				// 受信するまで待機
+				
+				
 				while ((mes = reader.readLine()) == null);
-				OutputLog("[Server]getMessage:" + mes);
+				
+				
+				//エンコード文字列対策
+				OutputLog("[Server]getMessage:" +mes);
 				//System.out.println("[Server]getMessage:" + mes);
 
 				// 向こうから終了するようにきたら終了させる 終了コマンドは"quit"

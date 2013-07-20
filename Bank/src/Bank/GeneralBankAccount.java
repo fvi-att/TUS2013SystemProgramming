@@ -1,5 +1,6 @@
 package Bank;
 
+
 /**
  * 普通銀行口座クラス
  * @author fvi@
@@ -88,5 +89,13 @@ public class GeneralBankAccount extends AbstractAccount {
 		// TODO 自動生成されたメソッド・スタブ
 		return false;
 	}
+	
+	
+	
+	//以下junitテストコード
+	public void testGeneralAccount(){
+		assert new GeneralBankAccount("testID", 40000).Deposit(30000000) == false;
+	}
 
 }
+
