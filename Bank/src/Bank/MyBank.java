@@ -5,18 +5,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
-/**
+/**このクラスは口座を操作するクラスです。どんな種類の口座でも扱うことができるようにするためには
+ * どのようにすればいいかを学びます。
+ * 
+ * 独自のイベントリスナの作り方を勉強するとより効率的に学習することができます。
+ * {@link}  http://techbooster.jpn.org/andriod/application/9054/
+ * 
+ * 
+ * 
  * @author fvi@
  * 
  * @version 0.5
  * 
  * @since 2013/05
  * 
- * このクラスは口座を操作するクラスです。どんな種類の口座でも扱うことができるようにするためには
- * どのようにすればいいかを学びます。
  * 
- * 独自のイベントリスナの作り方を勉強するとより効率的に学習することができます。
- * {@link}  http://techbooster.jpn.org/andriod/application/9054/
  * 
  */
 
@@ -59,7 +62,7 @@ public class MyBank implements CloseNotification {
 	}
 	/**
 	 * 
-	 * @param 口座を直接操作するのはおすすめしない。
+	 * 
 	 * @return 口座自身
 	 */
 
@@ -80,18 +83,18 @@ public class MyBank implements CloseNotification {
 		recipt.Print();
 		
 	}
-	/**
+	/**振り込みを行うメソッド。振り込みの仕込みはBankSocketクラスを参照すること
 	 * 
 	 * @param dst_ip 送信先
-	 * @param money　金額
-	 * @param message　送信メッセージ
-	 * @return　送金成功時 true その他　false <BR>
+	 * @param money 金額
+	 * @param message 送信メッセージ
+	 * @return 送金成功時 true その他 false <BR>
 	 * 
 	 */
 	
 	public boolean TransfarTo(String dst_ip,int transfer_money,String message){
 		//振込の定義を行う。
-		/**この場合だとある問題を解決できない。　それはなにか？
+		/*この場合だとある問題を解決できない。　それはなにか？
 		
 		if(myAccount.Withdraw(money)){
 			new BankSocket(dst_ip,money);
@@ -117,7 +120,14 @@ public class MyBank implements CloseNotification {
 		return false;
 		
 	}
-	
+	/**
+	 * withdrawメソッドは口座からamountの文だけ出金を試みます
+	 * 
+	 * 
+	 * 
+	 * @param amount　入金額
+	 * @return boolean　振り込み成功、失敗判定
+	 */
 	public static boolean Withdraw(int amount){
 		if(getAccount().Withdraw(amount)){
 			PrintRecipt("引き出し",amount);
@@ -150,10 +160,11 @@ public class MyBank implements CloseNotification {
 		return getAccount().getCashAmount();
 		}
 	
-	/**
+	/**loopMenuはCUI環境上で入出金がテスト的に実行することが出来る
 	 * 
 	 * 
 	 * @param mybank
+	 * @return void
 	 * @throws IOException
 	 */
 	static void loopMenu(MyBank mybank) throws IOException{
@@ -174,7 +185,7 @@ public class MyBank implements CloseNotification {
 		switch(mes){
 			case "deposit":
 				System.out.println("金額を指定してください");
-				if(mybank.getAccount().Deposit(Integer.parseInt(stdReader.readLine()))){
+				if(MyBank.getAccount().Deposit(Integer.parseInt(stdReader.readLine()))){
 					System.out.println("[MESSAGE]入金しました");
 				}else{
 					System.out.println("[ERROR]失敗しました。");
@@ -183,7 +194,7 @@ public class MyBank implements CloseNotification {
 			
 			case "withdraw":
 				System.out.println("金額を指定してください");
-				if(mybank.getAccount().Withdraw(Integer.parseInt(stdReader.readLine()))){
+				if(MyBank.getAccount().Withdraw(Integer.parseInt(stdReader.readLine()))){
 					System.out.println("[MESSAGE]出金しました");
 				}else{
 					System.out.println("[ERROR]失敗しました");
@@ -204,7 +215,7 @@ public class MyBank implements CloseNotification {
 			
 			case "status":
 				System.out.println("現在のアカウントの状況");
-				AbstractAccount myaccount = mybank.getAccount();
+				AbstractAccount myaccount = MyBank.getAccount();
 				
 				System.out.println("口座番号:"+myaccount.getAccountID()+"\n"+
 									"講座の種類："+myaccount.getAccountType()+"\n"+
@@ -227,9 +238,7 @@ public class MyBank implements CloseNotification {
 	/**
 	 * 
 	 * mainメソッドでは、新しい新規の口座を作成し基本的な動作をCUI環境上で行うことができます
-	 * @param deposit 入金<BR>
-	 * @param withdraw 引き出し<br>
-	 * @param status 口座情報<br>
+	 * 試験的な運用をCUI環境上で行えるようにしてあります。
 	 * 
 	 * 
 	 */

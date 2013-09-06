@@ -1,7 +1,14 @@
 package Bank;
 
 import java.util.HashMap;
-
+/**
+ * このクラスについての授業は行わないが通知センターとしてイベントを管理しイベント駆動型のプログラミングが行えるようにしている
+ * 
+ * 
+ * 
+ * @author Iwai_7
+ *
+ */
 public class EventManager {
 	
 	private static HashMap<String,NotificationCenter> map = new HashMap<String,NotificationCenter>();

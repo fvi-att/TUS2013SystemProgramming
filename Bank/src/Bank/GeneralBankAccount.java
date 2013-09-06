@@ -23,6 +23,7 @@ public class GeneralBankAccount extends AbstractAccount {
 		super.setAccountType("general");
 		// TODO Auto-generated constructor stub
 	}
+	
 	/**
 	 *@param withdraw_cash 引き出し額
 	 * 

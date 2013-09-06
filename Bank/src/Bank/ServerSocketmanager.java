@@ -4,6 +4,9 @@ package Bank;
 import java.io.IOException;
 import java.net.ServerSocket;
 /**
+ * 
+ * このクラスはサーバソケットの管理を行いマルチスレッド化を行うことで一度に複数の受信に耐えられるように
+ * 設計してあります
  * @inheritDoc BankTransferConfiguration
  * 
  * 
@@ -12,8 +15,7 @@ import java.net.ServerSocket;
  * @author fvi
  * @version 1.00
  * 
- * このクラスはサーバソケットの管理を行いマルチスレッド化を行うことで一度に複数の受信に耐えられるように
- * 設計してあります
+ *
  * 
  * @see ServerSocket
  * 
@@ -28,12 +30,19 @@ public class ServerSocketmanager extends Thread implements BankTransferConfigura
 		//これは難しいので無視して構わない
 		EventManager.Put("server_manager", this);
 	}
+	
+	/**
+	 * Threadクラスからオーバライドしたメソッド
+	 * ここでマルチスレッドで処理したい内容を記述する
+	 * 
+	 */
 	public void run(){
 		
 		
 		/*
 		 * もしかしたらサーバソケットを構築できないかもしれない
-		 * と考えると例外処理は必要と考える
+		 * と考えると例外処理は必要と考える.
+		 * 想像力を働かせてどのような問題が起こりうるか考える
 		 * 
 		 */
 		try {
@@ -67,6 +76,12 @@ public class ServerSocketmanager extends Thread implements BankTransferConfigura
 		}
 		
 	}
+	
+	/**
+	 * このメソッドは授業の範囲から外れるが通知センターの概念を用いている
+	 * (非 Javadoc)
+	 * @see Bank.NotificationCenter#NotificationCallfired(java.lang.Object[])
+	 */
 	@Override
 	public void NotificationCallfired(Object[] args) {
 		// TODO 自動生成されたメソッド・スタブ

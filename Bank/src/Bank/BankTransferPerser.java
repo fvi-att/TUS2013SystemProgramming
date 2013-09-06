@@ -4,6 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * BankServerから受け取った通信情報を解釈して処理を実際に行う
+ * @author fvi@author Iwai_7
+ * @version 1.1
+ */
 public class BankTransferPerser implements BankTransferConfiguration {
 
 	/**

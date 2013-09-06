@@ -22,7 +22,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-//これは気にしなくていい
+
+/**Bankシステムのうち、GUIでMyBankクラスを操作するためのクラス
+
+ * @author fvi@
+ * @verison 1.1
+ *
+ */
+//@SuperWarningは気にしなくて良いです
 @SuppressWarnings("serial")
 public class ATMFrameView extends JFrame implements ActionListener, NotificationCenter {
 
@@ -31,12 +38,9 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 	
 	JTextArea infotextArea;
 
-	private CloseNotification close_notification = mybank;//なぜ型が違うのに代入できるのかを考えよう
-
 	/**
 	 * GUI上の情報を更新するメソッド
-	 * 
-	 * 
+	 * 何らかしらの表示が終わった後GUIの情報を更新する際に呼び出す
 	 * 
 	 */
 	public void modify_GUI_value() {
@@ -45,6 +49,9 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 		this.setTitle("銀行システム    UserID:" + mybank.getAccountID() + "    残高："
 				+ mybank.getAccountAmount());
 	}
+	
+	
+	
 
 	public void showResult(boolean result, String message) {
 		if (result) {
@@ -57,8 +64,13 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 
 	/**
 	 * Frame内でのボタンの操作が行われた時呼び出されるメソッド
+	 * ActionListenerをimplements(実装）することでオーバーライドされる
 	 * (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 * 
+	 * コードを見ることでどのようなコマンドで処理を呼び出すのか確認すること
+	 * 
+	 * arg0にどのようなデータが入っているのか？
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
@@ -75,7 +87,7 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 				break;
 			}
 			
-			if(mybank.Deposit(Integer.parseInt(amount_string))){
+			if(MyBank.Deposit(Integer.parseInt(amount_string))){
 				System.out.println("入金を行いました");
 				infotextArea.append("\n[入金]"+amount_string+"\\の入金作業を行いました。");
 				
@@ -94,7 +106,7 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 			}
 			
 			
-			if(mybank.Withdraw(Integer.parseInt(amount_string))){
+			if(MyBank.Withdraw(Integer.parseInt(amount_string))){
 				System.out.println("引き出しを行いました");
 				infotextArea.append("\n[引き出し]"+amount_string+"\\の引き出し作業を行いました。");
 				
@@ -153,7 +165,12 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 		
 		modify_GUI_value();
 	}
-
+/**
+ * コンストラクタ
+ * ATmViewクラスがインスタンス化されるときに呼び出される
+ * 
+ * 
+ */
 	public ATMFrameView() {
 		//コンストラクタ
 		super();
@@ -179,8 +196,6 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 
 
 		JButton depositbutton = new JButton("入金");
-		//depositbutton.setSize(100, 100);
-		//depositbutton.setLocation(200, 200);
 		depositbutton.addActionListener(this);
 		leftPanel.add(depositbutton);
 		
@@ -198,27 +213,15 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 		leftPanel.add(transferbutton);
 
 		JButton statusButton = new JButton("口座確認");
-		//statusButton.setSize(200, 100);
-		//statusButton.setLocation(200, 350);
 		statusButton.setVisible(true);
 		statusButton.addActionListener(this);
 		leftPanel.add(statusButton);
 		
 		infotextArea =new  JTextArea(30,40);
 		JScrollPane scrollpane = new JScrollPane(infotextArea,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS , JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		//scrollpane.setSize(500, 100);
-		//scrollpane.setLocation(300,300);
 		scrollpane.setVisible(true);
 		
 		rightPanel.add(scrollpane);
-		
-		/*
-		contentpane.add(scrollpane);
-		contentpane.add(depositbutton);
-		contentpane.add(statusButton);
-		contentpane.add(withdrawbutton);
-		contentpane.add(transferbutton);
-		 */
 		
 		contentpane = getContentPane();
 		//レイアウトを実装するとFrameのサイズを可変にした時に対応したサイズにしてくれる。
@@ -250,7 +253,11 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 		EventManager.Put("ATMView",new ATMFrameView());
 
 	}
-
+/**
+ * (応用)通知センタ　イベント駆動型の処理を行う。
+ * 受け取ったイベント情報をGUI上に反映させる
+ * @param args[] args[0]　タイトル情報　args[1]　内容情報　(Object)
+ */
 	@Override
 	public void NotificationCallfired(Object[] args) {
 		// TODO 自動生成されたメソッド・スタブ 通知センターから呼び出しを受けた時

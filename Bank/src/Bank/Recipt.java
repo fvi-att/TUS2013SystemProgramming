@@ -8,6 +8,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
+
+/**(応用)取引の際に領収書データを作成し特定のフォルダに保存を試みます。
+ * 
+ * 
+ * 
+ * 
+ * @version 1.0
+ * @author Iwai_7
+ *
+ */
 public class Recipt {
 	
 	String title = null;

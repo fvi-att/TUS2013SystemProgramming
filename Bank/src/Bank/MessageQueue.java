@@ -4,8 +4,12 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 
-/*
-FIFO(First In First Out)を実現するデータ構造を実装する
+/**
+ * FIFO(First In First Out)を実現するデータ構造をこのクラスでは定義します
+ * 
+ * 
+ * @version 1.0
+ * @author fvi@
 */
 
 public class MessageQueue {

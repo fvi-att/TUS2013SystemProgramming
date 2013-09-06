@@ -9,12 +9,14 @@ import java.net.Socket;
 
 
 
-/**
+/**BankSocketクラスは振込などの外部にデータを送信する際に呼び出されるクラスです。
+ * 
+ * 
  * 
  * @author fvi@
  * @version 0.51
  * 
- * BankSocketクラスは振込などの外部にデータを送信する際に呼び出されるクラスです。
+ * 
  * @param SERVER_PORT TCP/IPソケット通信上で用いる統一ポート番号 15000<BR>
  * 
  * 
@@ -24,13 +26,15 @@ public class BankSocket implements BankTransferConfiguration {
 
 	Socket socket;
 
-	/**
-	 * 
-	 * BankSocketクラスはBankServerクラスに対してTCP/IP通信を試みます。
+	/** BankSocketクラスはBankServerクラスに対してTCP/IP通信を試みます。
 	 * 各種コマンドはBankServerクラス参照のこと
-	 * @param message 
+	 * @param dst_ip 送信先のipアドレス
+	 * @param money 送金額
+	 * @param message 送信するメッセージ
+	 * 
 	 * 
 	 * @see BankServer
+	 * @see BankTransferConfiguration
 	 * 
 	 */
 	public BankSocket(String dst_ip, int money, String message) {
@@ -110,8 +114,8 @@ public class BankSocket implements BankTransferConfiguration {
 
 	}
 
-	/**
-	 * main ではlocalhost =127.0.0.1にアクセスします。
+	/**main ではlocalhost =127.0.0.1にアクセスします。
+	 * @param dest_ip = 'localhost'
 	 * 
 	 */
 	public static void main(String[] args) {

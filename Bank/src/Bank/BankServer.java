@@ -2,13 +2,7 @@
 
 package Bank;
 
-/**
- * BankServerクラスは相手とのデータのやり取りを実際に行うクラスオブジェクトを生成します。
- * ここからマルチスレッドの勉強なども必要になると思いますので頑張ってください。
- * @author fvi@
- * 
- * @version 0.5
- */
+
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,13 +12,18 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * BankServerクラスは相手とのデータのやり取りを実際に行うクラスオブジェクトを生成します。
+ * ここからマルチスレッドの勉強なども必要になると思いますので頑張ってください。
+ * @author fvi@
+ * 
+ * @version 0.5
+ */
 public class BankServer extends Thread {
 	public final static int SERVER_PORT = 15000;
 
 	//static ServerSocket ss ;
 	private Socket act_socket = null;
-	
-	private MessageQueue recv_messageQue = null;
 	
 	private BankTransferPerser perser = null;
 
@@ -74,6 +73,10 @@ public class BankServer extends Thread {
 		EventManager.fireEvent("ATMView", messageToView);
 	}
 	
+	/**BankSocketクラスに対して予め設計した通信プロトコルを用いてデータの送受信を試みる
+	 * 
+	 *通信内容を確認して他の機能も追加できるようにしよう。
+	 */
 	
 	public void StartCommunication() {
 		
@@ -139,7 +142,13 @@ public class BankServer extends Thread {
 
 	}
 
-
+	/**BankServerクラスは　Threadクラスを継承しており丘のオブジェクト及びクラスからnew BankServer().start()で
+	 * 開始処理を呼び出されるとマルチスレッド呼び出し、実行が行われる
+	 * 
+	 * 
+	 * (非 Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -147,7 +156,7 @@ public class BankServer extends Thread {
 
 	}
 
-	/**
+	/**main関数
 	 * @param args
 	 * @throws IOException 
 	 */
@@ -158,8 +167,12 @@ public class BankServer extends Thread {
 		new Thread(new BankServer(serverSocket.accept())).start();
 
 	}
-
-
+	/**
+	 * 通信に問題が発生した場合このメソッドが呼び出されます
+	 * 
+	 * 
+	 * @throws IOException
+	 */
 	public void FinishServer() throws IOException {
 		System.out.println("通信を終了させます。To:"+act_socket.getInetAddress().toString());
 		
