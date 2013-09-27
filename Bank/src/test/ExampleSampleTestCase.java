@@ -17,12 +17,12 @@ public class ExampleSampleTestCase extends TestCase {
 		super.tearDown();
 	}
 
-	void testPlusMethod(){
+	public void testPlusMethod(){
 		int a = 5,b = 4;
 		int actual = Bank.SampleTestProgram.Plus(a, b);//a+bの結果が出てくると考えている 今回は9になるはずである
 		
 		//テスト内容　assert = ”であるべきである" a+b ＝？
-		assertEquals(a + b, actual);
+		super.assertEquals(a + b, actual);
 	}
 
 }
