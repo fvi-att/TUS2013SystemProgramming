@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
  * @author fvi@author Iwai_7
  * @version 1.1
  */
-public class BankTransferPerser implements BankTransferConfiguration {
+public class BankTransferParser implements BankTransferConfiguration {
 
 	/**
 	 * @param args
@@ -69,7 +69,7 @@ public class BankTransferPerser implements BankTransferConfiguration {
 						EventManager.fireEvent("ATMView", messageToView);
 						return BankTransferConfiguration.QUIT;
 					}
-					//各行動にコメントが付けられたらイイね。
+					//正規の通信ではない場合はABORTを返信する
 
 						return BankTransferConfiguration.ABORT;
 
@@ -81,7 +81,7 @@ public class BankTransferPerser implements BankTransferConfiguration {
 
 	}
 
-	public BankTransferPerser() {
+	public BankTransferParser() {
 		//これで4つのメッセージを受信することができるString型の配列のインスタンスを作成した。
 		order = new String[BankTransferConfiguration.message_size];
 	}
@@ -89,7 +89,7 @@ public class BankTransferPerser implements BankTransferConfiguration {
 	public static void main(String[] args) {
 		// TODO 自動生成されたメソッド・スタブ
 		System.out.println("このクラスはbankシステムの振込にて受け取ったメッセージを解釈し処理の実行、返答の決定を行うクラスです。");
-		BankTransferPerser perser = new BankTransferPerser();
+		BankTransferParser perser = new BankTransferParser();
 		int cnt = 0;
 
 		while (true) {

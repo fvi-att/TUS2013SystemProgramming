@@ -25,7 +25,7 @@ public class BankServer extends Thread {
 	//static ServerSocket ss ;
 	private Socket act_socket = null;
 	
-	private BankTransferPerser perser = null;
+	private BankTransferParser perser = null;
 
 	/**
 	 * StartCommunicationメソッドは１体１のTCP/IP通信を行うシンプルなメソッドです。
@@ -46,7 +46,7 @@ public class BankServer extends Thread {
 		this.act_socket = accept;
 		
 		
-		this.perser = new BankTransferPerser();
+		this.perser = new BankTransferParser();
 		
 		perser.setFrom(accept.getInetAddress().toString());
 	}
