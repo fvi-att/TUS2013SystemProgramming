@@ -1,8 +1,7 @@
-package srctest;
+package test04;
 
 import junit.framework.TestCase;
 import Bank.MyselfBank;
-import Bank.TestBankAccount_04_01;
 
 public class TestMyselfBankAccount_04_01 extends TestCase {
 	

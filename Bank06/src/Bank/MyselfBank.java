@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import test04.TestBankAccount_04_01;
+
 /**このクラスは口座を操作するクラスです。どんな種類の口座でも扱うことができるようにするためには
  * どのようにすればいいかを学びます。
  * 

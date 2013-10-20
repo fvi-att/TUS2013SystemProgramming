@@ -1,4 +1,4 @@
-package Bank;
+package test04;
 
 public class TestBankAccount_04_01 {
 	
