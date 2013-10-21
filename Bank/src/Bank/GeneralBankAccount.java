@@ -10,6 +10,7 @@ package Bank;
  * @param type:general 口座情報
  * 普通預金口座は以下の仕様です
  * 1.　預金額はマイナスにできない。
+ * 2.　200000\以上は入金できない
  * 
  * 
  */
@@ -34,6 +35,9 @@ public class GeneralBankAccount extends AbstractAccount {
 		// TODO Auto-generated method stub
 		// この銀行講座では引き出しが預金額を上回るときfalseを出力する。
 		try {
+			if(withdraw_cash < 0)
+				return false;
+			
 			if (super.getCashAmount() < withdraw_cash)
 				return false;
 			
@@ -57,7 +61,7 @@ public class GeneralBankAccount extends AbstractAccount {
 		try{
 			if(deposit_cash < 0)
 				return false;
-			
+			//general口座では200000\以上は入金できないというふうにしてある
 			if(deposit_cash > 200000)
 				return false;
 			
@@ -69,15 +73,10 @@ public class GeneralBankAccount extends AbstractAccount {
 		}
 		
 	}
-	@Override
-	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 	
 	/*同じメソッド名でも異なる引数を取る場合は別のメソッドとして処理することができる。
 	 * 
-	 * (非 Javadoc)
 	 * @see Bank.AbstractAccount#Withdraw(int, java.lang.String)
 	 */
 	@Override //通常の引き出しにコメントを付加する場合

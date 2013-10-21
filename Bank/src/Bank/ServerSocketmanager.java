@@ -52,13 +52,15 @@ public class ServerSocketmanager extends Thread implements BankTransferConfigura
 			*/
 			serverSocket = new ServerSocket(SERVER_PORT);
 			System.out.println("[ServerManager]サーバソケットを生成しましたポート番号："+String.valueOf(SERVER_PORT)+"で待機します");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			
-			//エラーメッセージをATMViewに投げる
+		}  catch (IOException already_used){
+			
+			System.out.println("[ERROR]サーバの起動に失敗しました。ポート"+BankTransferConfiguration.SERVER_PORT+"がすでに使われているようです。"+
+								"振込処理は行えません\n振り込みを行う場合システムの再起動を行なって下さい");
 			String[] err_messageToView = {"[エラー]","サーバソケットの初期化に失敗しました。システムの再起動を行なって下さい"};
 			EventManager.fireEvent("ATMView", err_messageToView);
+			return;
+			
 		}
 		
 		while(true){

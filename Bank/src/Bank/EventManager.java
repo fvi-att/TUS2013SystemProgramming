@@ -24,7 +24,8 @@ public class EventManager {
 	}
 	
 	public static void fireEvent(String key,Object[] obj){
-		map.get(key).NotificationCallfired(obj);
+		if(map.get(key) != null)
+			map.get(key).NotificationCallfired(obj);
 	}
 
 }

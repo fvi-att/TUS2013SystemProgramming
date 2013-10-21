@@ -13,8 +13,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URL;
 import java.net.UnknownHostException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -93,7 +95,7 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 				
 			}else{
 				System.err.println("入金に失敗しました");
-				infotextArea.append("\\入金に失敗しました");
+				infotextArea.append("\n入金に失敗しました");
 				
 			}
 		break;
@@ -230,6 +232,11 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 		contentpane.add(rightPanel);
 		
 		this.addWindowListener(new ClosedListener());
+		
+		
+		//easter_egg
+		URL imageIcon = this.getClass().getClassLoader().getResource("Bank/tcbc.png");
+		this.setIconImage(new ImageIcon(imageIcon).getImage());
 		
 		this.setVisible(true);
 		
