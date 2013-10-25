@@ -56,7 +56,7 @@ public abstract class AbstractAccount {
 	 */
 	protected boolean setAccountType(String type){
 		 //銀行口座の種類は以下の３つに限定する
-		 String[] bank_type = {"general","special","other"};
+		 String[] bank_type = {"general","company","government","other"};
 		 
 		 if(Arrays.asList(bank_type).contains(type)){
 			 accountType = type;

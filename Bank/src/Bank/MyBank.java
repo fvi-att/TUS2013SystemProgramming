@@ -36,29 +36,20 @@ public class MyBank implements CloseNotification {
 	 */
 
 	private static AbstractAccount myAccount;
-	private static MyBank self;
-	private BankServer server;
+	private static BankServer server;
+	/**
+	 * 
+	 * 
+	 * 
+	 * @param 
+	 */
+	private static void initBankAccount(AbstractAccount account) {
+		// TODO 自動生成されたメソッド・スタブ
+		
 
-	public MyBank() {
-		//サーバを起動して　待機状態にする
-		//.start()を.run()として呼び出しては行けない理由を考えてみよう
-		new Thread(new ServerSocketmanager()).start();
-		/*
-		 * このように
-		server = new BankServer();
-		server.start();
-		*/
-
-		//server = new BankServer();
-		//アカウントの初期設定を行う
-		if (myAccount == null) {
-			//myAccountが存在しない場合のみ作成を行う。
-			//初期状態では1000円に設定
-			myAccount = new GeneralBankAccount("sampleID", 1000);
-
-		}
-
-		self = this;
+		myAccount = account;
+		
+		
 
 	}
 
@@ -95,7 +86,7 @@ public class MyBank implements CloseNotification {
 	 * 
 	 */
 
-	public static boolean TransfarTo(String dst_ip, int transfer_money, String message) {
+	static boolean TransfarTo(String dst_ip, int transfer_money, String message) {
 		//振込の定義を行う
 		if (myAccount.Withdraw(transfer_money)) {
 			//引き出しが成功した場合は引き出しを試みる
@@ -121,7 +112,7 @@ public class MyBank implements CloseNotification {
 	 * @param amount　入金額
 	 * @return boolean　振り込み成功、失敗判定
 	 */
-	public static boolean Withdraw(int amount) {
+	static boolean Withdraw(int amount) {
 		if (getAccount().Withdraw(amount)) {
 			PrintRecipt("引き出し", amount);
 			return true;
@@ -131,7 +122,7 @@ public class MyBank implements CloseNotification {
 
 	}
 
-	public static boolean Deposit(int amount) {
+	static boolean Deposit(int amount) {
 		if (getAccount().Deposit(amount)) {
 			PrintRecipt("入金", amount);
 			return true;
@@ -141,26 +132,25 @@ public class MyBank implements CloseNotification {
 
 	}
 
-	public String getAccountType() {
+	static String getAccountType() {
 		return getAccount().getAccountType();
 	}
 
-	public String getAccountID() {
+	static String getAccountID() {
 		return getAccount().getAccountID();
 	}
 
-	public int getAccountAmount() {
+	static int getAccountAmount() {
 		return getAccount().getCashAmount();
 	}
 
 	/**loopMenuはCUI環境上で入出金がテスト的に実行することが出来る
 	 * 
 	 * 
-	 * @param mybank
 	 * @return void
 	 * @throws IOException
 	 */
-	static void loopMenu(MyBank mybank) throws IOException {
+	static void loopMenu() throws IOException {
 		BufferedReader stdReader = new BufferedReader(new InputStreamReader(System.in));
 		while (true) {
 			System.out.println("-------menu------------\n" +
@@ -170,10 +160,6 @@ public class MyBank implements CloseNotification {
 					"transfer::振込み作業を行います\n" +
 					"exit::プログラムを終了させます");
 			String mes = stdReader.readLine();
-			if (mes == "quit") {
-				System.out.println("[MESSAGE]システムを終了します");
-				break;
-			}
 
 			try {
 				switch (mes) {
@@ -203,7 +189,7 @@ public class MyBank implements CloseNotification {
 					System.out.println("メッセージを入力して下さい");
 					String message = stdReader.readLine();
 
-					mybank.TransfarTo(dst_ip, amount, message);
+					MyBank.TransfarTo(dst_ip, amount, message);
 
 					break;
 
@@ -219,15 +205,17 @@ public class MyBank implements CloseNotification {
 				case "exit":
 					System.out.println("銀行システムを終了させます");
 
-					if (self.server != null) {
-						self.server.FinishServer();
+					if (MyBank.server != null) {
+						MyBank.server.FinishServer();
 					}
-					
+
 					System.exit(0);//正常終了
 					break;
-					
 
 				}
+				//switch 終了
+				
+				
 			} catch (java.lang.NumberFormatException format_err) {
 				System.out.println("数値以外が入力されています。");
 				continue;
@@ -244,14 +232,14 @@ public class MyBank implements CloseNotification {
 	 * 
 	 */
 	public static void main(String[] args) throws IOException {
-		//jarから直接起動できないようにする
-				if(args.length == 0)
-					System.exit(1);
 		System.out.println("こんにちは.こちらはTCBC-Bankシステム（CUIコンソール）です");
-		loopMenu(new MyBank());
+		MyBank.initBankAccount(new GovernmentBankAccount("sampleID", 400000));
+		MyBank.loopMenu();
 	}
 
 	/**
+	 * 
+	 * [応用]
 	 * GUI上で終了処理を行ったなどの終了処理を行うときに
 	 * 通知インターフェースを用いてソケットの終了処理を行う
 	 * @throws IOException 

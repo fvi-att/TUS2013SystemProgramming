@@ -72,7 +72,6 @@ public class BankSocket implements BankTransferConfiguration {
 				// 送信先からの戻り値を受信
 				System.out.println("メッセージ受信中");
 				// 一応待機
-				// while (!reader.ready());
 				String response = reader.readLine();
 
 				System.out.println("受信したメッセージ： " + response);
