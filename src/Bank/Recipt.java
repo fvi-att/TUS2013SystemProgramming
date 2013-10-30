@@ -35,7 +35,7 @@ public class Recipt {
 
 	public Recipt() {
 		title = "領収書";
-		timeformat = new SimpleDateFormat("yyyy'年'MM'月'dd'日'HH'時'mm'分'ss'秒'");
+		timeformat = new SimpleDateFormat("yyyy'年'MM'月'dd'日'HH'時'mm'分'ss'秒'SSS");
 		transaction = new HashMap<String, Integer>();
 
 		comment = "";
@@ -108,7 +108,7 @@ public class Recipt {
 
 	}
 
-	public synchronized boolean Print(){
+	private boolean Print_Recipt(){
 		
 		this.BuildText();
 		
@@ -148,20 +148,13 @@ public class Recipt {
 		
 		return true;
 	}
-
 	
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO 自動生成されたメソッド・スタブ
-
-		Recipt recipt = new Recipt();
-
-		recipt.addTransaction("引き出し", 3000);
-		recipt.Print();
-
+	public static synchronized void Print(Recipt recipt){
+		recipt.Print_Recipt();
 	}
+
+	
+	
+
 
 }

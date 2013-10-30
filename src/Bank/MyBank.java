@@ -39,12 +39,14 @@ public class MyBank implements CloseNotification {
 	private static BankServer server;
 
 	/**
+	 * MyBankクラスは一度に一つの口座インスタンスを扱うようにする。
+	 * そのために、静的なMyBankクラスに動的なmyAccount口座を定義しておく
+	 * 必要がある。
 	 * 
 	 * 
-	 * 
-	 * @param
+	 * @param @see AbstractAccount 
 	 */
-	private static void initBankAccount(AbstractAccount account) {
+	public static void initBankAccount(AbstractAccount account) {
 		// TODO 自動生成されたメソッド・スタブ
 
 		myAccount = account;
@@ -80,7 +82,7 @@ public class MyBank implements CloseNotification {
 	private static void PrintRecipt(String subject, int amount) {
 		Recipt recipt = new Recipt();
 		recipt.addTransaction(subject, amount);
-		recipt.Print();
+		recipt.Print(recipt);
 	}
 	/**
 	 * 入金、出金後に領収書の発行をおこなうメソッドで更に
@@ -93,7 +95,7 @@ public class MyBank implements CloseNotification {
 		Recipt recipt = new Recipt();
 		recipt.addTransaction(subject, amount);
 		recipt.setComment(comment);
-		recipt.Print();
+		recipt.Print(recipt);
 		
 	}
 
@@ -145,8 +147,26 @@ public class MyBank implements CloseNotification {
 		} else {
 			return false;
 		}
-
 	}
+	
+	/**
+	 * withdrawメソッドは口座からamountの文だけ出金を試みます
+	 * さらにこのメソッドは領収書発行の際にコメントを付加します
+	 * 
+	 * 
+	 * @param amount
+	 *            　
+	 * @return boolean
+	 */
+	static boolean Withdraw(int amount, String comment) {
+		if (getAccount().Withdraw(amount)) {
+			MyBank.PrintRecipt("引き出し", amount,comment);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	
 	/**
 	 * 
@@ -182,15 +202,15 @@ public class MyBank implements CloseNotification {
 		}
 	}
 
-	static String getAccountType() {
+	public static String getAccountType() {
 		return getAccount().getAccountType();
 	}
 
-	static String getAccountID() {
+	public static String getAccountID() {
 		return getAccount().getAccountID();
 	}
 
-	static int getAccountAmount() {
+	public static int getAccountAmount() {
 		return getAccount().getCashAmount();
 	}
 

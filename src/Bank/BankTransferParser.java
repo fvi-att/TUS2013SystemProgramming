@@ -30,39 +30,43 @@ public class BankTransferParser implements BankTransferConfiguration {
 		this.from = from;
 	}
 
-	public String perseInputMessage(String inMes) {
-		System.out.println("解釈開始");
+	public String ParseMessagefromClient(String inMes) {
 		switch (step) {
 		case 0:
-			if (inMes.equals(establish_connectionWord)) {
-				receiveMessage[step] = inMes;
-				step++;
-				return OK;
-			} else {
-				return ABORT;
-			}
+			
+			
+			
+			
+			
+			
+			return ABORT;
 		case 1:
-			if (inMes.equals("send") || inMes.equals("receive")) {
-				receiveMessage[step] = inMes;
-				step++;
-				return OK;
-			} else {
-				return ABORT;
-			}
+			
+			
+			
+			
+			
+			
+			
+			return ABORT;
 		case 2:
-			if (inMes.equals(MyBank.getAccountID())) {
-				receiveMessage[step] = inMes;
-				step++;
-				return OK;
-			} else {
-				return ABORT;
-			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			return ABORT;
 		case 3:
 			// 金額情報文字列を取得する 文字列から数値に変更できない場合はABORTする。
 			try {
 				Integer.valueOf(inMes);
 			} catch (NumberFormatException num_err) {
 				// 例外が起きた場合（数値に変換できなかった場合）の処理
+				step = -1;
 				return ABORT;
 			}
 			receiveMessage[step] = inMes;
@@ -70,12 +74,17 @@ public class BankTransferParser implements BankTransferConfiguration {
 			return OK;
 		case 4:
 			receiveMessage[step] = inMes;
+		
 			step = -1;
 
 			if (receiveMessage[1].equals("send")) {
 				System.out.println("振込処理実行");
 				return processDeposit();
 			}
+			
+						
+			
+			
 			
 			return ABORT;
 
@@ -85,7 +94,7 @@ public class BankTransferParser implements BankTransferConfiguration {
 	}
 
 	public String processDeposit() {
-		String printMessage = this.from+"から振り込まれました";
+		String printMessage = this.from+"から振り込まれました\n\nコメント："+ receiveMessage[4];
 		if (MyBank.Deposit(Integer.parseInt(receiveMessage[3]),printMessage)) {
 			String[] messageToView = {
 					"振込処理受信",
@@ -100,4 +109,22 @@ public class BankTransferParser implements BankTransferConfiguration {
 			return ABORT;
 		}
 	}
+	
+	public String processWithdraw() {
+		String printMessage = this.from+"から引き落とされました\n\nコメント："+ receiveMessage[4];
+		if (MyBank.Withdraw(Integer.parseInt(receiveMessage[3]),printMessage)) {
+			String[] messageToView = {
+					"引き落とし処理受信",
+					from + "から" + receiveMessage[2]
+							+ "へ引き落とし処理を受信し振り込まれました.内容は以下の通りです\n" + "[引き落とし金額："
+							+ receiveMessage[3] + ",メッセージ：" + receiveMessage[4]
+							+ "]" };
+			//この部分は振込処理には直接には関係ないので考慮しなくて良い
+			EventManager.fireEvent("ATMView", messageToView);
+			return QUIT;
+		} else {
+			return ABORT;
+		}
+	}
+	
 }

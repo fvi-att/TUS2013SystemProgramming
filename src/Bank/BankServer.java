@@ -95,7 +95,7 @@ public class BankServer extends Thread {
 				//キューにメッセージを追加
 				
 				
-				String outMes =parser.perseInputMessage(inMes);
+				String outMes =parser.ParseMessagefromClient(inMes);
 				writer.write(outMes);
 				writer.newLine();
 				writer.flush();
