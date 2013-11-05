@@ -43,7 +43,7 @@ public class MyBank implements CloseNotification {
 	 * 
 	 * @param 
 	 */
-	private static void initBankAccount(AbstractAccount account) {
+	public static void initBankAccount(AbstractAccount account) {
 		// TODO 自動生成されたメソッド・スタブ
 		
 
@@ -71,9 +71,10 @@ public class MyBank implements CloseNotification {
 	 * 
 	 * 
 	 */
-	private static void PrintRecipt(String subject, int amount) {
+	private static void PrintRecipt(String subject, int amount,String comment) {
 		Recipt recipt = new Recipt();
 		recipt.addTransaction(subject, amount);
+		recipt.setComment(comment);
 		recipt.Print();
 	}
 
@@ -91,9 +92,14 @@ public class MyBank implements CloseNotification {
 		if (myAccount.Withdraw(transfer_money)) {
 			//引き出しが成功した場合は引き出しを試みる
 			new BankSocket(dst_ip, transfer_money, message);
+			
+			String comment = message;
+			if(message == null){
+				comment ="";
+			}
 
 			//作業が終了したら領収書を作成する
-			PrintRecipt("振込", transfer_money);
+			PrintRecipt("振込", transfer_money,comment);
 
 			return true;
 		}
@@ -114,7 +120,7 @@ public class MyBank implements CloseNotification {
 	 */
 	static boolean Withdraw(int amount) {
 		if (getAccount().Withdraw(amount)) {
-			PrintRecipt("引き出し", amount);
+			PrintRecipt("引き出し", amount,null);
 			return true;
 		} else {
 			return false;
@@ -124,7 +130,7 @@ public class MyBank implements CloseNotification {
 
 	static boolean Deposit(int amount) {
 		if (getAccount().Deposit(amount)) {
-			PrintRecipt("入金", amount);
+			PrintRecipt("入金", amount,null);
 			return true;
 		} else {
 			return false;
