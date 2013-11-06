@@ -257,6 +257,7 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		MyBank.initBankAccount(new GeneralBankAccount("sampleID",10000));
 		EventManager.Put("ATMView",new ATMFrameView());
 
 	}
