@@ -69,6 +69,7 @@ public class MyBank implements CloseNotification {
 
 	/**
 	 * 入金、出金後に領収書の発行をおこなうメソッド
+	 * @param message 
 	 * 
 	 * @param String
 	 *            subject 取引事項
@@ -77,7 +78,7 @@ public class MyBank implements CloseNotification {
 	 * 
 	 * 
 	 */
-	private static void PrintRecipt(String subject, int amount) {
+	private static void PrintRecipt(String subject, int amount, String message) {
 		Recipt recipt = new Recipt();
 		recipt.addTransaction(subject, amount);
 		recipt.Print();
@@ -103,7 +104,7 @@ public class MyBank implements CloseNotification {
 			new BankSocket(dst_ip, transfer_money, message);
 
 			// 作業が終了したら領収書を作成する
-			PrintRecipt("振込", transfer_money);
+			PrintRecipt("振込", transfer_money,message);
 
 			return true;
 		}
@@ -142,7 +143,8 @@ public class MyBank implements CloseNotification {
 		}
 
 	}
-
+	
+	
 	static String getAccountType() {
 		return getAccount().getAccountType();
 	}

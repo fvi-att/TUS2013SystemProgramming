@@ -60,8 +60,8 @@ public class BankTransferPerser implements BankTransferConfiguration {
 				} else if (order[3] != null) {
 					//振込処理を実行してみる
 
-					System.out.println("振込処理実行");
-					//以下振込処理　シングルトン構造に不安があるので改善が必要と考えています
+					System.out.println("振込処理実行開始");
+					//以下振込処理
 					
 					if(MyBank.Deposit(Integer.parseInt(order[2]))){
 						String[] messageToView = {"振込処理受信",from+"から振込処理を受信し振り込まれました.内容は以下の通りです\n"+
