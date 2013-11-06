@@ -30,6 +30,7 @@ public class Recipt {
 	HashMap<String ,Integer> transaction =null;
 	
 	String text = null;
+	String comment = null;
 	
 	
 	public Recipt(){
@@ -39,6 +40,7 @@ public class Recipt {
 		
 		
 		time = new Date();
+		comment = "";
 	
 	}
 	
@@ -83,7 +85,11 @@ public class Recipt {
 		this.account = account;
 	}
 	
-
+	public void setComment(String comment) {
+		// TODO 自動生成されたメソッド・スタブ
+		this.comment = comment;
+		
+	}
 	
 	
 	
@@ -114,9 +120,11 @@ public class Recipt {
 			
 		}
 		
-		text += "**************************備考**************************\n\n\n\n\n\n\n\n\n\n\n TCBC-BankSystem";
+		text += "**************************備考**************************\n\n"+comment+"\n\n\n\n\n\n\n\n\n TCBC-BankSystem";
 		
 	}
+	
+
 
 	public boolean Print(){
 		
@@ -159,5 +167,7 @@ public class Recipt {
 		recipt.Print();
 
 	}
+
+
 
 }

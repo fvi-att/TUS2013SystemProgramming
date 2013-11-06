@@ -78,9 +78,10 @@ public class MyBank implements CloseNotification {
 	 * 
 	 * 
 	 */
-	private static void PrintRecipt(String subject, int amount, String message) {
+	private static void PrintRecipt(String subject, int amount, String comment) {
 		Recipt recipt = new Recipt();
 		recipt.addTransaction(subject, amount);
+		recipt.setComment(comment);
 		recipt.Print();
 	}
 
@@ -126,7 +127,7 @@ public class MyBank implements CloseNotification {
 	 */
 	static boolean Withdraw(int amount) {
 		if (getAccount().Withdraw(amount)) {
-			PrintRecipt("引き出し", amount);
+			PrintRecipt("引き出し", amount,null);
 			return true;
 		} else {
 			return false;
@@ -136,7 +137,7 @@ public class MyBank implements CloseNotification {
 
 	static boolean Deposit(int amount) {
 		if (getAccount().Deposit(amount)) {
-			PrintRecipt("入金", amount);
+			PrintRecipt("入金", amount,null);
 			return true;
 		} else {
 			return false;
