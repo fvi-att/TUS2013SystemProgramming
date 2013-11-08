@@ -35,7 +35,7 @@ import javax.swing.JTextArea;
 @SuppressWarnings("serial")
 public class ATMFrameView extends JFrame implements ActionListener, NotificationCenter {
 
-	private MyBank mybank = null;
+	
 	Container contentpane;
 	
 	JTextArea infotextArea;
@@ -47,9 +47,8 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 	 */
 	public void modify_GUI_value() {
 		//toString()を設定しておくと便利なことは何か？
-		//this.setTitle("銀行システム    "+mybank.getAccount().toString());
-		this.setTitle("銀行システム    UserID:" + mybank.getAccountID() + "    残高："
-				+ mybank.getAccountAmount());
+		this.setTitle("銀行システム    UserID:" + MyBank.getAccountID() + "    残高："
+				+ MyBank.getAccountAmount());
 	}
 	
 	
@@ -145,7 +144,7 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 			String transfer_message = JOptionPane.showInputDialog(this, "振込先へのメッセージ", "振込", JOptionPane.QUESTION_MESSAGE);
 			
 			infotextArea.append("\n宛先："+dst_ip+",金額："+transfer_amount+",メッセージ："+transfer_message+"\nで振り込みます");
-			if(mybank.TransfarTo(dst_ip, transfer_amount, transfer_message)){
+			if(MyBank.TransfarTo(dst_ip, transfer_amount, transfer_message)){
 				infotextArea.append("\n振込が完了しました");
 			}else{
 				infotextArea.append("\n振込に失敗しました。");
@@ -154,9 +153,9 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 			break;
 		
 		case "口座確認":
-			JOptionPane.showMessageDialog(contentpane, "残高:"+mybank.getAccountAmount()+"円\n"+
-													   "口座ID："+mybank.getAccountID()+"\n"+
-													   	"口座タイプ:"+mybank.getAccountType()
+			JOptionPane.showMessageDialog(contentpane, "残高:"+MyBank.getAccountAmount()+"円\n"+
+													   "口座ID："+MyBank.getAccountID()+"\n"+
+													   	"口座タイプ:"+MyBank.getAccountType()
 													   	, "取引中の口座情報",JOptionPane.QUESTION_MESSAGE);
 			
 			break;
@@ -174,11 +173,9 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
  * 
  */
 	public ATMFrameView() {
-		//コンストラクタ
+		//コンストラクタ super()はスーパークラスのコンストラクタの内容の実行
 		super();
 
-		//Accountはシングルトンなので他のATMViewからたとえ引っ張ってきても同じ
-		mybank = new MyBank();
 		
 		//gui情報を更新
 		modify_GUI_value();
@@ -234,7 +231,7 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 		this.addWindowListener(new ClosedListener());
 		
 		
-		//easter_egg
+		//easter_egg(おまけ)
 		URL imageIcon = this.getClass().getClassLoader().getResource("Bank/tcbc.png");
 		this.setIconImage(new ImageIcon(imageIcon).getImage());
 		
@@ -257,6 +254,7 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		//初期設定　MyBankクラスに口座を設定する
 		MyBank.initBankAccount(new GeneralBankAccount("sampleID",10000));
 		EventManager.Put("ATMView",new ATMFrameView());
 
@@ -279,7 +277,7 @@ public class ATMFrameView extends JFrame implements ActionListener, Notification
 
 class ClosedListener extends WindowAdapter {
 	public void windowClosing(WindowEvent event){
-		System.out.println("closed window");
+		System.out.println("ATMFrameViewを閉じました");
 		String[] word ={"closed"};
 		EventManager.fireEvent("server_manager", word);
 		System.exit(0);

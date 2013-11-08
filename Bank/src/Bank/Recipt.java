@@ -24,22 +24,23 @@ public class Recipt {
 	
 	SimpleDateFormat timeformat = null;
 	Date time = null;
-	String comment = null;
 	
 	AbstractAccount account = null;
 	
 	HashMap<String ,Integer> transaction =null;
 	
 	String text = null;
+	String comment = null;
 	
 	
 	public Recipt(){
 		title = "領収書";
 		timeformat = new SimpleDateFormat("yyyy'年'MM'月'dd'日'HH'時'mm'分'ss'秒'");
 		transaction = new HashMap<String,Integer>();
-		comment = "";
+		
 		
 		time = new Date();
+		comment = "";
 	
 	}
 	
@@ -51,13 +52,6 @@ public class Recipt {
 		
 		transaction.put(name,amount);
 		
-		
-	}
-	
-	public void setComment(String comment){
-		if(comment != null){
-			this.comment = comment;
-		}
 		
 	}
 	public void setTime(Date fromTime){
@@ -91,7 +85,11 @@ public class Recipt {
 		this.account = account;
 	}
 	
-
+	public void setComment(String comment) {
+		// TODO 自動生成されたメソッド・スタブ
+		this.comment = comment;
+		
+	}
 	
 	
 	
@@ -122,10 +120,11 @@ public class Recipt {
 			
 		}
 		
-		text += "**************************備考**************************\n\n"+
-					comment+"\n\n\n\n\n\n\n\n\n TCBC-BankSystem";
+		text += "**************************備考**************************\n\n"+comment+"\n\n\n\n\n\n\n\n\n TCBC-BankSystem";
 		
 	}
+	
+
 
 	public boolean Print(){
 		
@@ -168,5 +167,7 @@ public class Recipt {
 		recipt.Print();
 
 	}
+
+
 
 }
