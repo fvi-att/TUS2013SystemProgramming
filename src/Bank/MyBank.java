@@ -82,6 +82,20 @@ public class MyBank implements CloseNotification {
 		recipt.addTransaction(subject, amount);
 		recipt.Print();
 	}
+	/**
+	 * 入金、出金後に領収書の発行をおこなうメソッドで更に
+	 * コメントを領収書に付加することができる。
+	 * @param subject
+	 * @param amount
+	 * @param comment
+	 */
+	private static void PrintRecipt(String subject,int amount,String comment){
+		Recipt recipt = new Recipt();
+		recipt.addTransaction(subject, amount);
+		recipt.setComment(comment);
+		recipt.Print();
+		
+	}
 
 	/**
 	 * 振り込みを行うメソッド。振り込みの仕込みはBankSocketクラスを参照すること
@@ -104,7 +118,7 @@ public class MyBank implements CloseNotification {
 			new BankSocket(dst_ip, account, transfer_money, message);
 
 			// 作業が終了したら領収書を作成する
-			PrintRecipt("振込", transfer_money);
+			PrintRecipt("振込", -1 *transfer_money);
 
 			return true;
 		}
@@ -143,12 +157,29 @@ public class MyBank implements CloseNotification {
 	 */
 	static boolean Deposit(int amount) {
 		if (getAccount().Deposit(amount)) {
-			PrintRecipt("入金", amount);
+			MyBank.PrintRecipt("入金", amount);
 			return true;
 		} else {
 			return false;
 		}
 
+	}
+	/**
+	 * 
+	 * depositメソッドは口座からamountの分だけ入金を試みます
+	 * さらにこのメソッドは領収書発行の際にコメントを付加します
+	 * 
+	 * @param amount
+	 * @param comment
+	 * @return
+	 */
+	static boolean Deposit(int amount,String comment){
+		if (getAccount().Deposit(amount)) {
+			MyBank.PrintRecipt("入金", amount,comment);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	static String getAccountType() {

@@ -85,7 +85,8 @@ public class BankTransferParser implements BankTransferConfiguration {
 	}
 
 	public String processDeposit() {
-		if (MyBank.Deposit(Integer.parseInt(receiveMessage[3]))) {
+		String printMessage = this.from+"から振り込まれました";
+		if (MyBank.Deposit(Integer.parseInt(receiveMessage[3]),printMessage)) {
 			String[] messageToView = {
 					"振込処理受信",
 					from + "から" + receiveMessage[2]
