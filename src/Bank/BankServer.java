@@ -20,12 +20,12 @@ import java.net.Socket;
  * @version 0.5
  */
 public class BankServer extends Thread {
-	public final static int SERVER_PORT = 15000;
+	public final static int SERVER_PORT = BankTransferConfiguration.SERVER_PORT;
 
 	//static ServerSocket ss ;
 	private Socket act_socket = null;
 	
-	private BankTransferPerser perser = null;
+	private BankTransferParser parser = null;
 
 	/**
 	 * StartCommunicationメソッドは１体１のTCP/IP通信を行うシンプルなメソッドです。
@@ -37,7 +37,7 @@ public class BankServer extends Thread {
 	 * @see MyGeneralBank
 	 * 
 	 * @see BankSocket
-	 * @see MessageQueue
+	 * @see TransferMessageClientSender
 	 */
 
 	public BankServer(Socket accept) {
@@ -46,26 +46,10 @@ public class BankServer extends Thread {
 		this.act_socket = accept;
 		
 		
-		this.perser = new BankTransferPerser();
+		this.parser = new BankTransferParser();
 		
-		perser.setFrom(accept.getInetAddress().toString());
+		parser.setFrom(accept.getInetAddress().toString());
 	}
-
-	/**ソケットの確立 1対1の通信の際はこれで十分です。
-	 * 1対多になった時にどのような問題点が起きるかを考えてみましょう
-	try {
-
-		ss = new ServerSocket(SERVER_PORT);
-
-		System.out.println("Server started port:" + SERVER_PORT
-				+ "で待機しています");
-		
-
-	} catch (Exception err) {
-		System.out.println("[Server]サーバーの確立に失敗しました");
-		err.printStackTrace();
-	}
-	*/
 	
 	void OutputLog(String output){
 		System.out.println(output);
@@ -94,32 +78,29 @@ public class BankServer extends Thread {
 
 			while (true) {
 
-				String mes = null;
+				String inMes; 
+				
 				// 受信するまで待機
-				
-				
-				while ((mes = reader.readLine()) == null);
-				
+				inMes = reader.readLine();
 				
 				//エンコード文字列対策
-				OutputLog("[Server]getMessage:" +mes);
-				//System.out.println("[Server]getMessage:" + mes);
+				OutputLog("[Server]getMessage:" +inMes);
 
 				// 向こうから終了するようにきたら終了させる 終了コマンドは"quit"
-				if (mes.matches(BankTransferConfiguration.QUIT) || mes.matches(BankTransferConfiguration.ABORT)) {
+				if (inMes.matches(BankTransferConfiguration.QUIT) || 
+						inMes.matches(BankTransferConfiguration.ABORT)) {
 					break;
 				}
 				//まずデータを解釈し次にどのような動作を行うかをきめる。
 				//キューにメッセージを追加
 				
-				perser.Put(mes);
 				
-				String out_mes =perser.Perse();
-				writer.write(out_mes);
+				String outMes =parser.perseInputMessage(inMes);
+				writer.write(outMes);
 				writer.newLine();
 				writer.flush();
 				
-				OutputLog(out_mes);
+				OutputLog(outMes);
 				//System.out.println("[Server]sendMessage:" + out_mes);
 
 			}

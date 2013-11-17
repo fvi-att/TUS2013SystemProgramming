@@ -16,8 +16,9 @@ public interface BankTransferConfiguration {
 	 * 
 	 */
 	final public int SERVER_PORT = 15000;
-	/**通信を行う際の最初の合言葉、シェイクハンドコマンド
+	/**
 	 * 
+	 * 通信を行う際の最初の合言葉、シェイクハンドコマンド
 	 * 
 	 */
 	final public String establish_connectionWord ="BankTransfer";

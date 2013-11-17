@@ -37,15 +37,25 @@ public class BankSocket implements BankTransferConfiguration {
 	 * @see BankTransferConfiguration
 	 * 
 	 */
-	public BankSocket(String dst_ip, int money, String message) {
-		//送信メッセージのデータ構造を作成今回はところてん方式でデータの出し入れが出来るキューを用いる
-		MessageQueue mes_q = new MessageQueue("send",money,message);
+	public BankSocket(String dst_ip, String account, int money, String message) {
+		/*サーバにどのようなメッセージを送信するか決定するオブジェクト
+		*ソケットごとに作成され、サーバからの返答によって次にどのようなメッセージを
+		*送信するか決定する
+		*/
+		TransferMessageClientSender sender = new TransferMessageClientSender("send",account,money,message);
 		
 		
 		
 		System.out.println("接続開始");
 		try {
+			
+			
+			
 			socket = new Socket(dst_ip, SERVER_PORT);
+			/*
+			 * NetworkInterface ni = NetworkInterface.getByName("wlan0");
+				socket.bind(bindpoint)
+			*/
 			
 			
 		    /* 準備：データ入力ストリームの定義--ソケットからデータを
@@ -57,45 +67,46 @@ public class BankSocket implements BankTransferConfiguration {
 		       書き込む．  sok ← out */
 
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-					socket.getOutputStream()));
+					socket.
+					getOutputStream()));
 			
+			//最初の接続の振込み処理開始を告げるメッセージ　ここから
 			
-			writer.write(BankTransferConfiguration.establish_connectionWord);
+			writer.write(sender.OutputMessage());
 			writer.newLine();
 			writer.flush();
+			//ここまで
 
 			System.out.println("送信完了");
+			
+			
+			//ここから先　実際のサーバとの通信
 			
 			
 			while (true) {
 
 				// 送信先からの戻り値を受信
 				System.out.println("メッセージ受信中");
-				// 一応待機
 				String response = reader.readLine();
-
 				System.out.println("受信したメッセージ： " + response);
+				sender.InputMessage(response);
 				
-				//終了処理 
-				if (response.equals(BankTransferConfiguration.ABORT)) {
-					System.out.println("転送失敗　払い戻し処理が必要");
-					break;
-				}
-				//STUB:今はOKが帰って来た場合を想定
-				String q_command = mes_q.poll();
 				
-				if(q_command == null){
-					writer.write(BankTransferConfiguration.QUIT);
-					writer.newLine();
-					writer.flush();
-					break;
-				}
+				//サーバへ送信するメッセージの生成
+				String q_command = sender.OutputMessage();
 				writer.write(q_command);
 				writer.newLine();
 				writer.flush();
 				
+				if(q_command.matches(BankTransferConfiguration.QUIT)){
+					break;
+				}
+				
 				
 			}
+			
+		
+			//以降、通信処理の後片付け
 			System.out.println("[Socket]転送システムを終了します");
 
 			reader.close();
@@ -103,7 +114,7 @@ public class BankSocket implements BankTransferConfiguration {
 
 			socket.close();
 			
-			
+		
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -120,7 +131,7 @@ public class BankSocket implements BankTransferConfiguration {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//localhostに引数指定した金額の送信を行う
-		new BankSocket("localhost", Integer.parseInt(args[1]),"test送金処理from localhost");
+		new BankSocket("localhost", "sampleID", Integer.parseInt(args[1]),"test送金処理from localhost");
 
 	}
 

@@ -22,11 +22,11 @@ import java.net.ServerSocket;
  * 
  *
  */
-public class ServerSocketmanager extends Thread implements BankTransferConfiguration, NotificationCenter{
+public class ServerSocketManager extends Thread implements BankTransferConfiguration, NotificationCenter{
 
 	ServerSocket serverSocket = null;
 	
-	public ServerSocketmanager(){
+	public ServerSocketManager(){
 		//これは難しいので無視して構わない
 		EventManager.Put("server_manager", this);
 	}
