@@ -31,12 +31,15 @@ public class Recipt {
 	
 	String text = null;
 	
+	String comment = null;
+	
 	
 	public Recipt(){
 		title = "領収書";
 		timeformat = new SimpleDateFormat("yyyy'年'MM'月'dd'日'HH'時'mm'分'ss'秒'");
 		transaction = new HashMap<String,Integer>();
 		
+		comment = "";
 		
 		time = new Date();
 	
@@ -113,8 +116,8 @@ public class Recipt {
 			text += "残高　　　:"+account.getCashAmount()+"\n";
 			
 		}
-		
-		text += "**************************備考**************************\n\n\n\n\n\n\n\n\n\n\n TCBC-BankSystem";
+		//備考欄にコメントの追加機能を実装
+		text += "**************************備考**************************\n\n"+comment+"\n\n\n\n\n\n\n\n\n TCBC-BankSystem";
 		
 	}
 

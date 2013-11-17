@@ -1,8 +1,5 @@
 package Bank;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 /**
  * BankServerから受け取った通信情報を解釈して処理を実際に行う
@@ -95,6 +92,7 @@ public class BankTransferParser implements BankTransferConfiguration {
 							+ "へ振込処理を受信し振り込まれました.内容は以下の通りです\n" + "[振込金額："
 							+ receiveMessage[3] + ",メッセージ：" + receiveMessage[4]
 							+ "]" };
+			//この部分は振込処理には直接には関係ないので考慮しなくて良い
 			EventManager.fireEvent("ATMView", messageToView);
 			return QUIT;
 		} else {

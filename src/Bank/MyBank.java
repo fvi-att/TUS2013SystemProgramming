@@ -133,7 +133,14 @@ public class MyBank implements CloseNotification {
 		}
 
 	}
-
+	
+	/**
+	 * 
+	 * depositメソッドは口座からamountの分だけ入金を試みます。
+	 * 
+	 * @param amount
+	 * @return
+	 */
 	static boolean Deposit(int amount) {
 		if (getAccount().Deposit(amount)) {
 			PrintRecipt("入金", amount);
